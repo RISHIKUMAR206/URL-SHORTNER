@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Shortify 🚀</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gradient-to-br from-indigo-700 via-purple-700 to-pink-600 min-h-screen flex items-center justify-center">
+
+<div class="bg-white/10 backdrop-blur-xl p-10 rounded-3xl shadow-2xl w-[420px] text-center text-white">
+
+<h1 class="text-3xl font-bold mb-2">🔗 Shortify</h1>
+<p class="text-sm mb-6 opacity-80">Modern URL Shortener</p>
+
+<input id="url" placeholder="Paste your long URL here..."
+class="w-full p-3 rounded-lg text-black mb-4 outline-none"/>
+
+<button onclick="shorten()" 
+class="bg-white text-purple-700 font-bold w-full py-2 rounded-lg hover:bg-gray-200 transition">
+Shorten URL
+</button>
+
+<div id="result" class="mt-6"></div>
+
+</div>
+
+<script>
+async function shorten() {
+  const longUrl = document.getElementById("url").value;
+
+  const res = await fetch("http://localhost:5000/shorten", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({ longUrl })
+  });
+
+  const data = await res.json();
+  const shortUrl = "http://localhost:5000/" + data.shortId;
+
+  document.getElementById("result").innerHTML = `
+    <div class="bg-white/20 p-4 rounded-xl mt-4">
+      <p class="mb-2">✅ Short URL:</p>
+      <a href="${shortUrl}" target="_blank" class="underline text-blue-200 block mb-2">
+        ${shortUrl}
+      </a>
+      <button onclick="copy('${shortUrl}')" 
+      class="bg-green-400 text-black px-3 py-1 rounded hover:bg-green-300">
+        Copy Link
+      </button>
+    </div>
+  `;
+}
+
+function copy(url) {
+  navigator.clipboard.writeText(url);
+  alert("Copied to clipboard 🚀");
+}
+</script>
+
+</body>
+</html>
